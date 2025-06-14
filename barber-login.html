@@ -1,76 +1,22 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <title>تسجيل / دخول الحلاق</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دخول / تسجيل حلاق</title>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <style>
-    body { font-family: sans-serif; background: #f9f9f9; padding: 2rem; text-align: center; }
-    input, button {
-      padding: 1rem;
-      margin: 0.5rem 0;
-      width: 90%;
-      max-width: 400px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-    }
-    button {
-      background: #2196F3;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    .error { color: red; margin-top: 1rem; }
+    body { font-family: sans-serif; background: #f5f5f5; padding: 2rem; text-align: center; }
+    .box { background: white; max-width: 400px; margin: auto; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+    input, button { width: 100%; margin: 0.5rem 0; padding: 0.8rem; font-size: 1rem; border-radius: 6px; border: 1px solid #ccc; }
+    button { background: #2196F3; color: white; border: none; cursor: pointer; }
+    .danger { background: #f44336; }
+    .error { color: red; margin-top: 0.5rem; }
   </style>
 </head>
 <body>
-  <h2>تسجيل / دخول الحلاق</h2>
-
-  <input id="email" type="email" placeholder="البريد الإلكتروني" />
-  <input id="password" type="password" placeholder="كلمة المرور" />
-  <input id="salonName" placeholder="اسم الصالون" />
-  <input id="area" placeholder="المنطقة" />
-  <input id="location" placeholder="رابط Google Maps" />
-  <input id="photo" placeholder="رابط صورة الحلاق (اختياري)" />
-
-  <button onclick="login()">دخول / تسجيل جديد</button>
-  <p id="msg" class="error"></p>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCPGWygb1itp6kMI4Gi390IhPdfUwufKBg",
-      authDomain: "barbr-68f18.firebaseapp.com",
-      databaseURL: "https://barbr-68f18-default-rtdb.firebaseio.com",
-      projectId: "barbr-68f18",
-      storageBucket: "barbr-68f18.firebasestorage.app",
-      messagingSenderId: "1052537884081",
-      appId: "1:1052537884081:web:88eec881530acbd7a3c190"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
-
-    function login() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const salon = document.getElementById("salonName").value.trim();
-      const area = document.getElementById("area").value.trim();
-      const location = document.getElementById("location").value.trim();
-      const photo = document.getElementById("photo").value.trim();
-      const msg = document.getElementById("msg");
-
-      if (!email || !password || !salon || !area || !location) {
-        msg.textContent = "❗ يرجى ملء جميع الحقول المطلوبة.";
-        return;
-      }
-
-      auth.signInWithEmailAndPassword(email, password)
-        .then(userCredential => {
-          const uid = userCredential.user.uid;
-          localStorage.setItem("barberId", uid);
-          msg.textContent
+  <div class="box">
+    <h2>🔐 تسجيل الدخول</h2>
+    <input id="loginEmail" type="email
