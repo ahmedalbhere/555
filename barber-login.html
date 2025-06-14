@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>تسجيل / دخول الحلاق</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: sans-serif; background: #f9f9f9; padding: 2rem; text-align: center; }
+    input, button {
+      padding: 1rem;
+      margin: 0.5rem 0;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      background: #2196F3;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h2>تسجيل / دخول الحلاق</h2>
+
+  <input id="email" type="email" placeholder="الإيميل" />
+  <input id="password" type="password" placeholder="كلمة المرور" />
+  <input id="salonName" placeholder="اسم الصالون" />
+  <input id="area" placeholder="المنطقة" />
+  <input id="location" placeholder="رابط Google Maps" />
+  <input id="photo" placeholder="رابط صورة الحلاق (اختياري)" />
+
+  <button onclick="login()">دخول / تسجيل</button>
+  <p id="msg" class="error"></p>
+
+  <script>
+    // ✅ إعدادات Firebase الخاصة بك
+    const firebaseConfig = {
+      apiKey: "AIzaSyCPGWygb1itp6kMI4Gi390IhPdfUwufKBg",
+      authDomain: "barbr-68f18.firebaseapp.com",
+      databaseURL: "https://barbr-68f18-default-rtdb.firebaseio.com",
+      projectId: "barbr-68f18",
+      storageBucket: "barbr-68f18.firebasestorage.app",
+      messagingSenderId: "1052537884081",
+      appId: "1:1052537884081:web:88eec881530acbd7a3c190",
+      measurementId: "G-LS1PC9NFPT"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const salon = document.getElementById("salonName").value.trim();
+      const area = document.getElementById("area").value.trim();
+      const location = document.getElementById("location").value.trim();
+      const photo = document.getElementById("photo").value.trim();
+      const msg = document.getElementById("msg");
+
+      if (!email || !password || !salon || !area || !location) {
+        msg.textContent = "يرجى ملء جميع الحقول المطلوبة.";
+        return;
+      }
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          const uid = userCredential.user.uid;
+          localStorage.setItem("barberId", uid);
+          window.location.href = "barber-dashboard.html";
+        })
+        .catch((error) => {
+          if (error.code === "auth/user-not-found") {
+            // إنشاء حساب جديد
+            auth.createUserWithEmailAndPassword(email, password)
+              .then((userCredential) => {
+                const uid = userCredential.user.uid;
+                db.ref("barbers/" + uid).set({
+                  email,
+                  salon,
+                  area,
+                  location,
+                  photo,
+                  open: true,
+                  queue: {}
+                });
+                localStorage.setItem("barberId", uid);
+                window.location.href = "barber-dashboard.html";
+              })
+              .catch((err) => {
+                msg.textContent = "خطأ أثناء التسجيل: " + err.message;
+              });
+          } else {
+            msg.textContent = "❌ " + error.message;
+          }
+        });
+    }
+  </script>
+</body>
+</html>
