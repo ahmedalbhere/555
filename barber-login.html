@@ -24,7 +24,7 @@
       border: none;
       cursor: pointer;
     }
-    .error { color: red; }
+    .error { color: red; margin-top: 1rem; }
   </style>
 </head>
 <body>
@@ -37,7 +37,7 @@
   <input id="location" placeholder="رابط Google Maps" />
   <input id="photo" placeholder="رابط صورة الحلاق (اختياري)" />
 
-  <button onclick="login()">دخول / تسجيل</button>
+  <button onclick="login()">دخول / تسجيل جديد</button>
   <p id="msg" class="error"></p>
 
   <script>
@@ -73,37 +73,4 @@
         .then(userCredential => {
           const uid = userCredential.user.uid;
           localStorage.setItem("barberId", uid);
-          msg.textContent = "✅ تم تسجيل الدخول بنجاح.";
-          window.location.href = "barber-dashboard.html";
-        })
-        .catch(error => {
-          if (error.code === "auth/user-not-found") {
-            // إنشاء حساب جديد
-            auth.createUserWithEmailAndPassword(email, password)
-              .then(userCredential => {
-                const uid = userCredential.user.uid;
-                db.ref("barbers/" + uid).set({
-                  email,
-                  salon,
-                  area,
-                  location,
-                  photo,
-                  open: true,
-                  queue: {}
-                });
-                localStorage.setItem("barberId", uid);
-                msg.textContent = "✅ تم إنشاء حساب جديد.";
-                window.location.href = "barber-dashboard.html";
-              })
-              .catch(err => {
-                msg.textContent = "❌ خطأ أثناء إنشاء الحساب: " + err.message;
-              });
-          } else if (error.code === "auth/wrong-password") {
-            msg.textContent = "❌ كلمة المرور غير صحيحة.";
-          } else {
-            msg.textContent = "❌ " + error.message;
-          }
-        });
-    }
-  </script>
-</body>
+          msg.textContent
