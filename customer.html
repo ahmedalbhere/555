@@ -80,4 +80,19 @@
             <p>📋 عدد المنتظرين: ${queue.length}</p>
             <a href="${barber.location}" target="_blank">📍 موقع الصالون</a><br>
             <input id="name_${id}" placeholder="اكتب اسمك">
-            <button class="book-btn" onclick="book('${id}')"
+            <button class="book-btn" onclick="book('${id}')" ${!isOpen ? "disabled" : ""}>احجز الآن</button>
+            <button class="queue-btn" onclick="showQueue('${id}')">عرض قائمة الانتظار</button>
+            <div id="queue_${id}" style="margin-top: 0.5rem; color: #555;"></div>
+          `;
+          container.appendChild(div);
+        });
+      });
+    }
+
+    function book(id) {
+      const nameInput = document.getElementById(`name_${id}`);
+      const name = nameInput.value.trim();
+      if (!name) return alert("يرجى كتابة اسمك");
+
+      const queueRef = db.ref(`barbers/${id}/queue`);
+      queueRef
