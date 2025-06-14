@@ -30,7 +30,7 @@
 <body>
   <h2>تسجيل / دخول الحلاق</h2>
 
-  <input id="email" type="email" placeholder="الإيميل" />
+  <input id="email" type="email" placeholder="البريد الإلكتروني" />
   <input id="password" type="password" placeholder="كلمة المرور" />
   <input id="salonName" placeholder="اسم الصالون" />
   <input id="area" placeholder="المنطقة" />
@@ -41,7 +41,6 @@
   <p id="msg" class="error"></p>
 
   <script>
-    // ✅ إعدادات Firebase الخاصة بك
     const firebaseConfig = {
       apiKey: "AIzaSyCPGWygb1itp6kMI4Gi390IhPdfUwufKBg",
       authDomain: "barbr-68f18.firebaseapp.com",
@@ -49,8 +48,7 @@
       projectId: "barbr-68f18",
       storageBucket: "barbr-68f18.firebasestorage.app",
       messagingSenderId: "1052537884081",
-      appId: "1:1052537884081:web:88eec881530acbd7a3c190",
-      measurementId: "G-LS1PC9NFPT"
+      appId: "1:1052537884081:web:88eec881530acbd7a3c190"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -67,21 +65,22 @@
       const msg = document.getElementById("msg");
 
       if (!email || !password || !salon || !area || !location) {
-        msg.textContent = "يرجى ملء جميع الحقول المطلوبة.";
+        msg.textContent = "❗ يرجى ملء جميع الحقول المطلوبة.";
         return;
       }
 
       auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
+        .then(userCredential => {
           const uid = userCredential.user.uid;
           localStorage.setItem("barberId", uid);
+          msg.textContent = "✅ تم تسجيل الدخول بنجاح.";
           window.location.href = "barber-dashboard.html";
         })
-        .catch((error) => {
+        .catch(error => {
           if (error.code === "auth/user-not-found") {
             // إنشاء حساب جديد
             auth.createUserWithEmailAndPassword(email, password)
-              .then((userCredential) => {
+              .then(userCredential => {
                 const uid = userCredential.user.uid;
                 db.ref("barbers/" + uid).set({
                   email,
@@ -93,11 +92,14 @@
                   queue: {}
                 });
                 localStorage.setItem("barberId", uid);
+                msg.textContent = "✅ تم إنشاء حساب جديد.";
                 window.location.href = "barber-dashboard.html";
               })
-              .catch((err) => {
-                msg.textContent = "خطأ أثناء التسجيل: " + err.message;
+              .catch(err => {
+                msg.textContent = "❌ خطأ أثناء إنشاء الحساب: " + err.message;
               });
+          } else if (error.code === "auth/wrong-password") {
+            msg.textContent = "❌ كلمة المرور غير صحيحة.";
           } else {
             msg.textContent = "❌ " + error.message;
           }
@@ -105,4 +107,3 @@
     }
   </script>
 </body>
-</html>
