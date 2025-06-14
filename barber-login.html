@@ -19,4 +19,45 @@
 <body>
   <div class="box">
     <h2>🔐 تسجيل الدخول</h2>
-    <input id="loginEmail" type="email
+    <input id="loginEmail" type="email" placeholder="البريد الإلكتروني">
+    <input id="loginPassword" type="password" placeholder="كلمة المرور">
+    <button onclick="login()">📥 لدي حساب</button>
+
+    <hr>
+
+    <h2>🆕 تسجيل جديد</h2>
+    <input id="regEmail" type="email" placeholder="البريد الإلكتروني">
+    <input id="regPassword" type="password" placeholder="كلمة المرور">
+    <input id="salon" placeholder="اسم الصالون">
+    <input id="area" placeholder="المنطقة">
+    <input id="location" placeholder="رابط Google Maps">
+    <input id="photo" placeholder="رابط صورة الحلاق (اختياري)">
+    <button class="danger" onclick="register()">📝 إنشاء حساب جديد</button>
+
+    <p class="error" id="msg"></p>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCPGWygb1itp6kMI4Gi390IhPdfUwufKBg",
+      authDomain: "barbr-68f18.firebaseapp.com",
+      databaseURL: "https://barbr-68f18-default-rtdb.firebaseio.com",
+      projectId: "barbr-68f18",
+      storageBucket: "barbr-68f18.firebasestorage.app",
+      messagingSenderId: "1052537884081",
+      appId: "1:1052537884081:web:88eec881530acbd7a3c190"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+    const msg = document.getElementById("msg");
+
+    function login() {
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
+      if (!email || !password) return msg.textContent = "يرجى إدخال البريد وكلمة المرور";
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(user => {
+          localStorage.setItem("barber
