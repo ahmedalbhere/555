@@ -72,24 +72,4 @@
         statusEl.textContent = status ? "✅ مفتوح" : "❌ مغلق";
         statusEl.className = status ? "status-open" : "status-closed";
       });
-    }
-
-    function toggleStatus() {
-      barberRef.child("open").get().then(snap => {
-        barberRef.child("open").set(!snap.val());
-      });
-    }
-
-    function loadQueue() {
-      const list = document.getElementById("queueList");
-      barberRef.child("queue").on("value", snap => {
-        const data = snap.val();
-        list.innerHTML = "";
-
-        if (data) {
-          Object.entries(data).forEach(([key, val], index) => {
-            const li = document.createElement("li");
-            li.className = "queue-item";
-            li.innerHTML = `
-              ${index + 1}. ${val.name}
-              ${index === 0 ? `<button onclick="
+   
